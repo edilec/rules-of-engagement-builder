@@ -14,8 +14,8 @@ export async function packCheck(){
   const sourcePkg=JSON.parse(await readFile(join(source,'package.json'),'utf8'));
   for(const name of ['dependencies','devDependencies','optionalDependencies','peerDependencies'])assert.deepEqual(Object.keys(sourcePkg[name]??{}),[]);
   for(const name of ['prepack','prepare','postpack','preinstall','install','postinstall'])assert.equal(sourcePkg.scripts?.[name],undefined);
-  const tgz=join(root,'package.tgz'),packReceipt=join(root,'pack-network-count');
-  command('pnpm',['pack','--out',tgz],{env:{...process.env,npm_config_offline:'true',npm_config_update_notifier:'false',COREPACK_ENABLE_NETWORK:'0',CI:'true',NODE_OPTIONS:`--import=${join(source,'test/preload-deny-network.mjs')}`,ROE_OFFLINE_ALLOW_LOCAL_PROCESS:'1',ROE_OFFLINE_RECEIPT:packReceipt}});
+  const tgz=join(root,`${sourcePkg.name}-${sourcePkg.version}.tgz`),packReceipt=join(root,'pack-network-count');
+  command('pnpm',['pack','--pack-destination',root],{env:{...process.env,npm_config_offline:'true',npm_config_update_notifier:'false',COREPACK_ENABLE_NETWORK:'0',CI:'true',NODE_OPTIONS:`--import=${join(source,'test/preload-deny-network.mjs')}`,ROE_OFFLINE_ALLOW_LOCAL_PROCESS:'1',ROE_OFFLINE_RECEIPT:packReceipt}});
   const packNetworkAttempts=Number(await readFile(packReceipt,'utf8'));assert.equal(packNetworkAttempts,0);
   const entries=command('tar',['-tf',tgz]).trim().split('\n');
   for(const p of entries){assert.ok(p.startsWith('package/'));assert.ok(!p.split('/').includes('..'));assert.ok(!/\/(?:build|drafts|test|scripts|\.superpowers)\//u.test(p));assert.ok(!p.includes('.roe-stage-'));}
