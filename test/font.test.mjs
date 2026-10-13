@@ -1,0 +1,3 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';import {createHash} from 'node:crypto';import {loadFont} from '../src/font.mjs';
+const bytes=readFileSync(new URL('../assets/fonts/Vera.ttf',import.meta.url));
+test('bundled font has pinned bytes and meaningful metrics',()=>{assert.equal(createHash('sha256').update(bytes).digest('hex'),'c4c45690b345435b2cba52ecabe275f05e49b389b39fe68ad03afbb551288d3d');const f=loadFont(bytes);for(const ch of ['A',' ','—','é'])assert.ok(f.glyphFor(ch.codePointAt(0))>0);assert.ok(f.advanceFor(f.glyphFor(65))>0);assert.equal(f.glyphFor(0x1f600),0);assert.throws(()=>loadFont(bytes.subarray(0,100)),e=>e.ruleId==='runtime-resource-unavailable');});
