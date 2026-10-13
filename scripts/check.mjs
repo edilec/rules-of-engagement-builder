@@ -1,0 +1,5 @@
+import {readdir,mkdtemp,rm} from 'node:fs/promises';import {tmpdir} from 'node:os';import {join} from 'node:path';import {spawnSync} from 'node:child_process';import assert from 'node:assert/strict';
+function run(args){const r=spawnSync(process.execPath,args,{stdio:'inherit'});if(r.status!==0)process.exit(r.status??2);}
+run(['scripts/lint.mjs']);run(['--test',...(await readdir('test')).filter(p=>p.endsWith('.test.mjs')).sort().map(p=>'test/'+p)]);
+const root=await mkdtemp(join(tmpdir(),'roe-examples-'));
+try{for(const [name,code,status]of [['complete',0,'pass'],['missing-emergency',2,'incomplete'],['contradictory-methods',1,'fail']]){const r=spawnSync(process.execPath,['bin/rules-of-engagement-builder.mjs','--input','examples/'+name+'/questionnaire.json','--out-dir',join(root,name)],{encoding:'utf8',timeout:15000});assert.equal(r.status,code);assert.equal(JSON.parse(r.stdout).status,status);}process.stdout.write('Offline examples passed (0, 2, 1).\n');}finally{await rm(root,{recursive:true,force:true});}

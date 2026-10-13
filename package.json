@@ -3,8 +3,34 @@
   "version": "0.1.0",
   "description": "Generate unsigned engagement drafts from a bounded offline questionnaire.",
   "type": "module",
-  "engines": {"node": ">=22"},
-  "scripts": {"test": "node --test test/*.test.mjs"},
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "lint": "node scripts/lint.mjs",
+    "test": "node --test test/*.test.mjs",
+    "check": "node scripts/check.mjs",
+    "pack:check": "node scripts/pack-check.mjs"
+  },
   "license": "MIT",
-  "author": "Edilec Private Limited"
+  "author": "Edilec Private Limited",
+  "bin": {
+    "rules-of-engagement-builder": "./bin/rules-of-engagement-builder.mjs"
+  },
+  "exports": "./src/index.mjs",
+  "files": [
+    "bin",
+    "src",
+    "assets/fonts",
+    "docs",
+    "examples",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md",
+    "THIRD_PARTY_NOTICES.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/edilec/rules-of-engagement-builder.git"
+  }
 }
