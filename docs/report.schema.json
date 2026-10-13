@@ -127,6 +127,9 @@
           "scope-candidate.json"
         ]
       }
+    },
+    "stagingCleanupIncomplete": {
+      "const": true
     }
   }
 }

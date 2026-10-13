@@ -7,7 +7,7 @@ import {assertWritableDestination,prepareOutputDirectory,sameIdentity} from './d
 import {LIMITS} from './budget.mjs';
 // Private trusted output directories are required: portable Node lacks openat-style ancestor anchoring.
 export async function publishArtifacts(artifacts,{outDir,outputRoot=null,inputs=[],budget,io=fs}){
- let directory,stage,stageIdentity;const promoted=[],findings=[],retained=[];
+ let directory,stage,stageIdentity;let preserveStage=false;const promoted=[],findings=[],retained=[];
  async function assertDirectory(){const now=await io.lstat(directory.path);if(!now.isDirectory()||now.isSymbolicLink()||!sameIdentity(now,directory))throw new OutputProblem('output-directory-invalid');}
  async function cleanStage(){if(!stage)return;const current=await io.lstat(stage);if(!current.isDirectory()||!sameIdentity(current,stageIdentity))throw new OutputProblem('output-cleanup-failed');await io.rm(stage,{recursive:true});stage=null;}
  try{
@@ -30,9 +30,28 @@ export async function publishArtifacts(artifacts,{outDir,outputRoot=null,inputs=
   budget.check();await cleanStage();return {written:promoted.map(p=>p.name).sort(byCodeUnit),retained:[],findings:[],incomplete:false};
  }catch(e){
   findings.push(finding(e instanceof OutputProblem?e.ruleId:e.ruleId==='evaluation-deadline'?e.ruleId:'output-write-failed','','@output'));
-  for(const p of promoted.reverse())try{const current=await io.lstat(p.path);if(!sameIdentity(current,p))throw new Error('identity changed');await io.unlink(p.path);}catch(error){if(error.code!=='ENOENT')retained.push(p.name);}
-  try{await cleanStage();}catch{findings.push(finding('output-cleanup-failed','','@output'));}
+  // Move the public leaf into private quarantine before checking/deleting it. A lstat/unlink
+  // pair on the public path would delete a replacement inserted between those two operations.
+  for(const p of promoted.reverse()){
+   let quarantined=false;
+   try{
+    const currentStage=await io.lstat(stage);
+    if(!currentStage.isDirectory()||!sameIdentity(currentStage,stageIdentity))throw new Error('stage identity changed');
+    const quarantine=join(stage,'.rollback-'+p.name);
+    await io.rename(p.path,quarantine);quarantined=true;
+    const current=await io.lstat(quarantine);
+    if(sameIdentity(current,p))await io.unlink(quarantine);
+    else{
+     retained.push(p.name);
+     // An unexpected inode belongs to somebody else. Restore only without replacement.
+     // If another destination has appeared, keep private quarantine and never recursively remove it.
+     try{await io.link(quarantine,p.path);await io.unlink(quarantine);}catch{preserveStage=true;}
+    }
+   }catch(error){if(error.code!=='ENOENT'||quarantined){retained.push(p.name);if(quarantined)preserveStage=true;}}
+  }
+  if(!preserveStage)try{await cleanStage();}catch{preserveStage=true;}
+  if(preserveStage){for(const a of artifacts)if(!retained.includes(a.name))retained.push(a.name);findings.push(finding('output-cleanup-failed','','@output'));}
   if(retained.length&&!findings.some(f=>f.ruleId==='output-cleanup-failed'))findings.push(finding('output-cleanup-failed','','@output'));
-  return {written:[],retained:retained.sort(byCodeUnit),findings,incomplete:true};
+  return {written:[],retained:[...new Set(retained)].sort(byCodeUnit),findings,incomplete:true,...(preserveStage?{stagingCleanupIncomplete:true}:{})};
  }
 }

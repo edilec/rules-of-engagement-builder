@@ -8,7 +8,7 @@ import {exitCode} from '../src/report.mjs';
 const HELP=`rules-of-engagement-builder --input questionnaire.json --out-dir drafts/ [--output-root existing-directory] [--human]\n\nOffline unsigned drafts. stdout: JSON report; stderr: help and optional summary.\nExisting output files and output-directory symlinks are refused. Optional --output-root confines real output parents; without it, ancestor symlinks are followed.\nExit 0: five complete drafts; 1: complete policy contradiction; 2: incomplete input/generation or bad configuration.\nDRAFT — NOT AUTHORIZED UNTIL SIGNED\n`;
 export function parseArgs(argv){
  const options={},seen=new Set(),names={'--input':'inputPath','--out-dir':'outDir','--output-root':'outputRoot','--human':'human','--help':'help'};
- for(let i=0;i<argv.length;i++){const flag=argv[i],name=names[flag];if(!name||seen.has(flag))throw new Error('config');seen.add(flag);if(flag==='--human'||flag==='--help')options[name]=true;else{const value=argv[++i];if(!value||value.startsWith('--'))throw new Error('config');options[name]=value;}}
+ for(let i=0;i<argv.length;i++){const flag=argv[i];if(!Object.hasOwn(names,flag)||seen.has(flag))throw new Error('config');const name=names[flag];seen.add(flag);if(flag==='--human'||flag==='--help')options[name]=true;else{const value=argv[++i];if(!value||value.startsWith('--'))throw new Error('config');options[name]=value;}}
  if(!options.help&&(!options.inputPath||!options.outDir))throw new Error('config');return options;
 }
 export async function runCli(argv,{stdout=process.stdout,stderr=process.stderr,build=buildDrafts}={}){

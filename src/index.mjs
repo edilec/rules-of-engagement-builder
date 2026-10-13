@@ -34,6 +34,6 @@ export async function buildDrafts({inputPath,outDir,outputRoot=null},{now,io}={}
   const parsed=await readQuestionnaire(inputPath,{budget,inputs});if(parsed.incomplete)return makeReport({findings:parsed.findings,incomplete:true});checked=1;
   const resource=await readFont(inputs,budget),result=evaluateValue(parsed.value,{budget,...resource});if(result.report.status!=='pass')return result.report;
   const published=await publishArtifacts(result.artifacts,{outDir,outputRoot,inputs,budget,...(io?{io}:{})});
-  return makeReport({checked:1,findings:published.findings,incomplete:published.incomplete,filesWritten:published.written,retainedFiles:published.retained});
+  return makeReport({checked:1,findings:published.findings,incomplete:published.incomplete,filesWritten:published.written,retainedFiles:published.retained,stagingCleanupIncomplete:published.stagingCleanupIncomplete});
  }catch(e){return failure(e,checked);}
 }

@@ -36,7 +36,7 @@ stdout contains one JSON report followed by a newline. `--human` adds a fixed no
 | 2 | Missing/malformed evidence, exceeded limit, unsupported input or generation failure | incomplete report |
 | 2 | Invalid CLI options/configuration | empty; fixed stderr diagnostic |
 
-The report lists exactly the successfully published files. Failed generation has no complete file list. If rollback cannot remove an owned partial file, `retainedFiles` names incomplete destinations and an `output-cleanup-failed` finding is emitted. Consult [rules](docs/rules.md) and [report schema](docs/report.schema.json).
+The report lists exactly the successfully published files. Failed generation has no complete file list. If rollback cannot remove or safely restore a file, `retainedFiles` names incomplete destination or staged artifact roles and an `output-cleanup-failed` finding is emitted. `stagingCleanupIncomplete: true` means private staging could not be safely cleaned: inspect the `.roe-stage-*` directory under the chosen output directory and preserve its `.rollback-*` quarantined files. Unrelated replacement bytes are restored only without replacement; if restoration is blocked, private quarantine is retained rather than deleted. Consult [rules](docs/rules.md) and [report schema](docs/report.schema.json).
 
 ## Limits and deterministic behavior
 
@@ -62,13 +62,13 @@ const report = await buildDrafts({inputPath:'questionnaire.json',outDir:'drafts'
 Have Node, local pnpm or npm, `tar`, and Poppler (`pdfinfo`, `pdffonts`, `pdftotext`, `pdftoppm`) already installed. Tests never fetch prerequisites or contact a target. PDF checks require the independent parser and fail if it is missing.
 
 ```sh
-pnpm run lint
-pnpm run test
-pnpm run check
-pnpm run pack:check
+node scripts/lint.mjs
+node --test test/*.test.mjs
+node scripts/check.mjs
+node scripts/pack-check.mjs
 ```
 
-Scripts have equivalent npm names where npm is installed. `check` runs lint, tests and passing/incomplete/contradictory examples. `pack:check` makes an offline local tarball and tests its extracted CLI; it does not publish or install anything. Font embedding, field text extraction, output boundaries, rollback, exact limits and a network-denial preload are tested.
+The package also exposes equivalent `lint`, `test`, `check` and `pack:check` scripts through pnpm/npm. Direct Node commands avoid package-manager automatic setup/update behavior; packing itself uses the installed pnpm under offline configuration and network denial. `check` runs lint, tests and passing/incomplete/contradictory examples. `pack:check` makes an offline local tarball and tests its extracted CLI; it does not publish or install anything. Font embedding, field text extraction, output boundaries, rollback, exact limits and a network-denial preload are tested.
 
 ## Boundaries and non-goals
 

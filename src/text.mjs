@@ -7,6 +7,7 @@ export function validateText(raw,{pointer='',identity=false,maxUnits=4096}={}){
  if(typeof raw!=='string')return refuse('input-shape-invalid');
  if(secrets.test(raw))return refuse('secret-like-content');
  const value=renderedText(raw);
+ if(secrets.test(value))return refuse('secret-like-content');
  if(!value)return refuse('required-text-unusable');
  if(raw.length>maxUnits)return refuse('text-limit');
  if(/\p{Surrogate}/u.test(raw))return refuse('unsupported-pdf-character');
