@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import {stat} from 'node:fs/promises';
+import {realpathSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import {resolve} from 'node:path';
 import {buildDrafts} from '../src/index.mjs';
@@ -17,4 +18,4 @@ export async function runCli(argv,{stdout=process.stdout,stderr=process.stderr,b
  if(options.human)stderr.write(report.status==='pass'?`Generated ${report.summary.filesWritten} draft files. DRAFT — NOT AUTHORIZED UNTIL SIGNED\n`:`Draft generation ${report.status}. No complete draft set was published.\n`);
  return exitCode(report);
 }
-if(process.argv[1]&&resolve(process.argv[1])===fileURLToPath(import.meta.url))process.exitCode=await runCli(process.argv.slice(2));
+if(process.argv[1]&&realpathSync(resolve(process.argv[1]))===fileURLToPath(import.meta.url))process.exitCode=await runCli(process.argv.slice(2));

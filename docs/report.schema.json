@@ -1,0 +1,132 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "tool",
+    "status",
+    "summary",
+    "findings",
+    "filesWritten"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1"
+    },
+    "tool": {
+      "const": "rules-of-engagement-builder"
+    },
+    "status": {
+      "enum": [
+        "pass",
+        "fail",
+        "incomplete"
+      ]
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "checked",
+        "errors",
+        "warnings",
+        "filesWritten"
+      ],
+      "properties": {
+        "checked": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "errors": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "warnings": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "filesWritten": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "ruleId",
+          "severity",
+          "message",
+          "location"
+        ],
+        "properties": {
+          "ruleId": {
+            "type": "string"
+          },
+          "severity": {
+            "enum": [
+              "error",
+              "warning",
+              "info"
+            ]
+          },
+          "message": {
+            "type": "string"
+          },
+          "location": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "file"
+            ],
+            "properties": {
+              "file": {
+                "enum": [
+                  "@questionnaire",
+                  "@output",
+                  "@runtime"
+                ]
+              },
+              "pointer": {
+                "type": "string"
+              }
+            }
+          },
+          "suggestion": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "filesWritten": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "authorization-letter.md",
+          "authorization-letter.pdf",
+          "rules-of-engagement.md",
+          "rules-of-engagement.pdf",
+          "scope-candidate.json"
+        ]
+      }
+    },
+    "retainedFiles": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "authorization-letter.md",
+          "authorization-letter.pdf",
+          "rules-of-engagement.md",
+          "rules-of-engagement.pdf",
+          "scope-candidate.json"
+        ]
+      }
+    }
+  }
+}
