@@ -1,0 +1,137 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Unsigned scope candidate; final Scope Guard schema preparation required",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "artifactType",
+    "authorization",
+    "requiresClientSignature",
+    "scopeId",
+    "start",
+    "end",
+    "windows",
+    "allowedDomains",
+    "allowedCidrs",
+    "excludedDomains",
+    "excludedCidrs",
+    "requiredContactRoles"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1"
+    },
+    "artifactType": {
+      "const": "unsigned-scope-candidate"
+    },
+    "authorization": {
+      "const": "not-authorized"
+    },
+    "requiresClientSignature": {
+      "const": true
+    },
+    "scopeId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "start": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4096
+    },
+    "end": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4096
+    },
+    "windows": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "start",
+          "end"
+        ],
+        "properties": {
+          "start": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          },
+          "end": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          }
+        }
+      }
+    },
+    "allowedDomains": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "includeSubdomains"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          },
+          "includeSubdomains": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "allowedCidrs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 4096
+      }
+    },
+    "excludedDomains": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "includeSubdomains"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          },
+          "includeSubdomains": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "excludedCidrs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 4096
+      }
+    },
+    "requiredContactRoles": {
+      "const": [
+        "critical-finding",
+        "emergency"
+      ]
+    }
+  }
+}
