@@ -1,0 +1,10 @@
+{
+  "name": "rules-of-engagement-builder",
+  "version": "0.1.0",
+  "description": "Generate unsigned engagement drafts from a bounded offline questionnaire.",
+  "type": "module",
+  "engines": {"node": ">=22"},
+  "scripts": {"test": "node --test test/*.test.mjs"},
+  "license": "MIT",
+  "author": "Edilec Private Limited"
+}
