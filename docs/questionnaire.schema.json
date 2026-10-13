@@ -1,0 +1,360 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Rules of Engagement Questionnaire v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "client",
+    "provider",
+    "engagementId",
+    "start",
+    "end",
+    "windows",
+    "allowedDomains",
+    "allowedCidrs",
+    "excludedDomains",
+    "excludedCidrs",
+    "contacts",
+    "permittedMethods",
+    "prohibitedMethods",
+    "dataHandling",
+    "incidentStopRule",
+    "escalationChannel",
+    "signatures"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "enum": [
+        "1"
+      ]
+    },
+    "client": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "legalName",
+        "authorizedRepresentative"
+      ],
+      "properties": {
+        "legalName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "authorizedRepresentative": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "name",
+            "title"
+          ],
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "title": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            }
+          }
+        }
+      }
+    },
+    "provider": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "legalName"
+      ],
+      "properties": {
+        "legalName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        }
+      }
+    },
+    "engagementId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "start": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4096
+    },
+    "end": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4096
+    },
+    "windows": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "start",
+          "end"
+        ],
+        "properties": {
+          "start": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          },
+          "end": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          }
+        }
+      },
+      "maxItems": 100
+    },
+    "allowedDomains": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "includeSubdomains"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          },
+          "includeSubdomains": {
+            "type": "boolean"
+          }
+        }
+      },
+      "maxItems": 500
+    },
+    "allowedCidrs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 4096
+      },
+      "maxItems": 500
+    },
+    "excludedDomains": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "includeSubdomains"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          },
+          "includeSubdomains": {
+            "type": "boolean"
+          }
+        }
+      },
+      "maxItems": 100
+    },
+    "excludedCidrs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 4096
+      },
+      "maxItems": 100
+    },
+    "contacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "role",
+          "name",
+          "channel",
+          "address"
+        ],
+        "properties": {
+          "role": {
+            "type": "string",
+            "enum": [
+              "emergency",
+              "critical-finding"
+            ]
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          },
+          "channel": {
+            "type": "string",
+            "enum": [
+              "email",
+              "phone",
+              "other"
+            ]
+          },
+          "address": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          }
+        }
+      },
+      "maxItems": 20
+    },
+    "permittedMethods": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "description"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          }
+        }
+      },
+      "maxItems": 100
+    },
+    "prohibitedMethods": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "description"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          }
+        }
+      },
+      "maxItems": 100
+    },
+    "dataHandling": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "classification",
+        "storage",
+        "transfer",
+        "retentionDays",
+        "disposal"
+      ],
+      "properties": {
+        "classification": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "storage": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "transfer": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "retentionDays": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "disposal": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        }
+      }
+    },
+    "incidentStopRule": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4096
+    },
+    "escalationChannel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "channel",
+        "address"
+      ],
+      "properties": {
+        "channel": {
+          "type": "string",
+          "enum": [
+            "email",
+            "phone",
+            "other"
+          ]
+        },
+        "address": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        }
+      }
+    },
+    "signatures": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "client",
+        "provider"
+      ],
+      "properties": {
+        "client": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "provider": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        }
+      }
+    }
+  },
+  "$comment": "Runtime also enforces combined target/exclusion caps, strict UTC, rendered presence, secret/font checks and policy boundaries."
+}

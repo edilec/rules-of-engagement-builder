@@ -1,0 +1,83 @@
+{
+  "schemaVersion": "1",
+  "client": {
+    "legalName": "Example Client Ltd",
+    "authorizedRepresentative": {
+      "name": "Sample Representative",
+      "title": "Director"
+    }
+  },
+  "provider": {
+    "legalName": "Example Provider Ltd"
+  },
+  "engagementId": "ENG-EXAMPLE-001",
+  "start": "2030-01-01T09:00:00Z",
+  "end": "2030-01-03T17:00:00Z",
+  "windows": [
+    {
+      "start": "2030-01-01T10:00:00Z",
+      "end": "2030-01-01T12:00:00Z"
+    }
+  ],
+  "allowedDomains": [
+    {
+      "name": "app.example.test",
+      "includeSubdomains": true
+    }
+  ],
+  "allowedCidrs": [
+    "192.0.2.0/24",
+    "2001:db8::/32"
+  ],
+  "excludedDomains": [
+    {
+      "name": "admin.app.example.test",
+      "includeSubdomains": true
+    }
+  ],
+  "excludedCidrs": [
+    "192.0.2.128/25"
+  ],
+  "contacts": [
+    {
+      "role": "emergency",
+      "name": "Example Duty Lead",
+      "channel": "phone",
+      "address": "+1-202-555-0100"
+    },
+    {
+      "role": "critical-finding",
+      "name": "Example Security Lead",
+      "channel": "email",
+      "address": "security@example.test"
+    }
+  ],
+  "permittedMethods": [
+    {
+      "id": "configuration-review",
+      "description": "Review supplied configuration exports."
+    }
+  ],
+  "prohibitedMethods": [
+    {
+      "id": "configuration-review",
+      "description": "Do not disrupt service availability."
+    }
+  ],
+  "dataHandling": {
+    "classification": "confidential",
+    "storage": "Store only in the agreed encrypted engagement folder.",
+    "transfer": "Use the agreed client transfer channel.",
+    "retentionDays": 30,
+    "disposal": "Delete engagement copies after the agreed retention period."
+  },
+  "incidentStopRule": "Stop all testing immediately on an incident and await client approval to resume.",
+  "escalationChannel": {
+    "channel": "email",
+    "address": "escalation@example.test"
+  },
+  "signatures": {
+    "client": "Client signature and date",
+    "provider": "Provider signature and date"
+  }
+}
